@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:medchain/screens/medicine_varified_screen.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -42,63 +43,81 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _onDetect(BarcodeCapture capture) {
     final List<Barcode> barcodes = capture.barcodes;
-    for (final barcode in barcodes) {
-      _showScanResultDialog(barcode.rawValue ?? "Unknown");
+    // for (final barcode in barcodes) {
+    //   _showScanResultDialog(barcode.rawValue ?? "Unknown");
+    // }
+
+    if (barcodes[0].rawValue != null) {
+      isScanning = false;
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder:
+              (context) =>
+                  MedicineVerifiedScreen(jsonData: barcodes[0].rawValue!),
+        ),
+      );
     }
   }
 
   void _showScanResultDialog(String code) {
     // In a real app, we would verify this code against our blockchain
     bool isVerified = code.length > 5; // Dummy verification logic
-    
+
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: Text(isVerified ? "Authentic Medicine" : "Verification Failed"),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text("QR Code: $code"),
-            const SizedBox(height: 8),
-            Text(
-              isVerified 
-                ? "This medicine is verified on the blockchain and is authentic."
-                : "This medicine could not be verified. It may be counterfeit.",
-              style: TextStyle(
-                color: isVerified ? Colors.green.shade700 : Colors.red.shade700,
-                fontWeight: FontWeight.bold,
-              ),
+      builder:
+          (context) => AlertDialog(
+            title: Text(
+              isVerified ? "Authentic Medicine" : "Verification Failed",
             ),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              Navigator.pop(context);
-              if (isVerified) {
-                // Add to recent scans in a real app
-                setState(() {
-                  recentScans.insert(
-                    0, 
-                    ScanResult(
-                      medicineId: code,
-                      medicineName: "Sample Medicine",
-                      manufacturer: "Sample Manufacturer",
-                      verificationStatus: true,
-                      timestamp: DateTime.now(),
-                    )
-                  );
-                  if (recentScans.length > 10) {
-                    recentScans.removeLast();
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text("QR Code: $code"),
+                const SizedBox(height: 8),
+                Text(
+                  isVerified
+                      ? "This medicine is verified on the blockchain and is authentic."
+                      : "This medicine could not be verified. It may be counterfeit.",
+                  style: TextStyle(
+                    color:
+                        isVerified
+                            ? Colors.green.shade700
+                            : Colors.red.shade700,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context);
+                  if (isVerified) {
+                    // Add to recent scans in a real app
+                    setState(() {
+                      recentScans.insert(
+                        0,
+                        ScanResult(
+                          medicineId: code,
+                          medicineName: "Sample Medicine",
+                          manufacturer: "Sample Manufacturer",
+                          verificationStatus: true,
+                          timestamp: DateTime.now(),
+                        ),
+                      );
+                      if (recentScans.length > 10) {
+                        recentScans.removeLast();
+                      }
+                    });
                   }
-                });
-              }
-            },
-            child: const Text("OK"),
+                },
+                child: const Text("OK"),
+              ),
+            ],
           ),
-        ],
-      ),
     );
   }
 
@@ -106,69 +125,69 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       isScanning = true;
     });
-    
+
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
       backgroundColor: Colors.transparent,
-      builder: (context) => Container(
-        height: MediaQuery.of(context).size.height * 0.8,
-        decoration: const BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-        ),
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    "Scan Medicine QR Code",
-                    style: TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.close),
-                    onPressed: () {
-                      //controller?.pauseCamera();
-                      Navigator.pop(context);
-                      setState(() {
-                        isScanning = false;
-                      });
-                    },
-                  ),
-                ],
-              ),
+      builder:
+          (context) => Container(
+            height: MediaQuery.of(context).size.height * 0.8,
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
             ),
-            Expanded(
-              child: MobileScanner(
-                onDetect: _onDetect,
-                // overlay: MobileScannerOverlay(
-                //   overlayColor: Theme.of(context).primaryColor,
-                //   borderRadius: 10,
-                //   borderLength: 30,
-                //   borderWidth: 10,
-                //   cutOutSize: MediaQuery.of(context).size.width * 0.8,
-                // ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: Text(
-                "Position the QR code within the frame to scan",
-                style: TextStyle(
-                  color: Colors.grey.shade600,
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        "Scan Medicine QR Code",
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.close),
+                        onPressed: () {
+                          //controller?.pauseCamera();
+                          Navigator.pop(context);
+                          setState(() {
+                            isScanning = false;
+                          });
+                        },
+                      ),
+                    ],
+                  ),
                 ),
-                textAlign: TextAlign.center,
-              ),
+                Expanded(
+                  child: MobileScanner(
+                    onDetect: _onDetect,
+                    // overlayBuilder: (context, constraints) => ,
+                    // overlay: MobileScannerOverlay(
+                    //   overlayColor: Theme.of(context).primaryColor,
+                    //   borderRadius: 10,
+                    //   borderLength: 30,
+                    //   borderWidth: 10,
+                    //   cutOutSize: MediaQuery.of(context).size.width * 0.8,
+                    // ),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Text(
+                    "Position the QR code within the frame to scan",
+                    style: TextStyle(color: Colors.grey.shade600),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
-      ),
+          ),
     ).then((_) {
       //controller?.pauseCamera();
       setState(() {
@@ -188,10 +207,7 @@ class _HomeScreenState extends State<HomeScreen> {
             SizedBox(width: 8),
             Text(
               "MedChain",
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                color: Colors.teal,
-              ),
+              style: TextStyle(fontWeight: FontWeight.bold, color: Colors.teal),
             ),
           ],
         ),
@@ -249,10 +265,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   const SizedBox(height: 16),
                   const Text(
                     "Scan the QR code on your medicine package to verify its authenticity using blockchain technology",
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.grey,
-                    ),
+                    style: TextStyle(fontSize: 16, color: Colors.grey),
                     textAlign: TextAlign.center,
                   ),
                   const SizedBox(height: 30),
@@ -279,7 +292,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 ],
               ),
             ),
-            
+
             // Recent scans section
             Padding(
               padding: const EdgeInsets.all(20),
@@ -297,108 +310,110 @@ class _HomeScreenState extends State<HomeScreen> {
                   const SizedBox(height: 16),
                   recentScans.isEmpty
                       ? Center(
-                          child: Padding(
-                            padding: const EdgeInsets.all(20),
-                            child: Column(
-                              children: [
-                                Icon(
-                                  Icons.history,
-                                  size: 60,
-                                  color: Colors.grey.shade400,
+                        child: Padding(
+                          padding: const EdgeInsets.all(20),
+                          child: Column(
+                            children: [
+                              Icon(
+                                Icons.history,
+                                size: 60,
+                                color: Colors.grey.shade400,
+                              ),
+                              const SizedBox(height: 16),
+                              Text(
+                                "No recent scans",
+                                style: TextStyle(
+                                  fontSize: 16,
+                                  color: Colors.grey.shade600,
                                 ),
-                                const SizedBox(height: 16),
-                                Text(
-                                  "No recent scans",
-                                  style: TextStyle(
-                                    fontSize: 16,
-                                    color: Colors.grey.shade600,
-                                  ),
-                                ),
-                              ],
-                            ),
+                              ),
+                            ],
                           ),
-                        )
-                      : ListView.builder(
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemCount: recentScans.length,
-                          itemBuilder: (context, index) {
-                            final scan = recentScans[index];
-                            return Card(
-                              margin: const EdgeInsets.only(bottom: 12),
-                              elevation: 1,
-                              shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
-                              ),
-                              child: ListTile(
-                                contentPadding: const EdgeInsets.symmetric(
-                                  horizontal: 16,
-                                  vertical: 8,
-                                ),
-                                leading: CircleAvatar(
-                                  backgroundColor: scan.verificationStatus
-                                      ? Colors.green.shade100
-                                      : Colors.red.shade100,
-                                  child: Icon(
-                                    scan.verificationStatus
-                                        ? Icons.check
-                                        : Icons.close,
-                                    color: scan.verificationStatus
-                                        ? Colors.green.shade700
-                                        : Colors.red.shade700,
-                                  ),
-                                ),
-                                title: Text(
-                                  scan.medicineName,
-                                  style: const TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                subtitle: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const SizedBox(height: 4),
-                                    Text(
-                                      "Manufacturer: ${scan.manufacturer}",
-                                      style: TextStyle(
-                                        fontSize: 13,
-                                        color: Colors.grey.shade700,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 2),
-                                    Text(
-                                      "ID: ${scan.medicineId}",
-                                      style: TextStyle(
-                                        fontSize: 13,
-                                        color: Colors.grey.shade700,
-                                      ),
-                                    ),
-                                    const SizedBox(height: 4),
-                                    Text(
-                                      _formatDate(scan.timestamp),
-                                      style: TextStyle(
-                                        fontSize: 12,
-                                        color: Colors.grey.shade500,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                trailing: Icon(
-                                  Icons.arrow_forward_ios,
-                                  size: 16,
-                                  color: Colors.grey.shade400,
-                                ),
-                                onTap: () {
-                                  // Show detailed scan result
-                                },
-                              ),
-                            );
-                          },
                         ),
+                      )
+                      : ListView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: recentScans.length,
+                        itemBuilder: (context, index) {
+                          final scan = recentScans[index];
+                          return Card(
+                            margin: const EdgeInsets.only(bottom: 12),
+                            elevation: 1,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            child: ListTile(
+                              contentPadding: const EdgeInsets.symmetric(
+                                horizontal: 16,
+                                vertical: 8,
+                              ),
+                              leading: CircleAvatar(
+                                backgroundColor:
+                                    scan.verificationStatus
+                                        ? Colors.green.shade100
+                                        : Colors.red.shade100,
+                                child: Icon(
+                                  scan.verificationStatus
+                                      ? Icons.check
+                                      : Icons.close,
+                                  color:
+                                      scan.verificationStatus
+                                          ? Colors.green.shade700
+                                          : Colors.red.shade700,
+                                ),
+                              ),
+                              title: Text(
+                                scan.medicineName,
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              subtitle: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    "Manufacturer: ${scan.manufacturer}",
+                                    style: TextStyle(
+                                      fontSize: 13,
+                                      color: Colors.grey.shade700,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 2),
+                                  Text(
+                                    "ID: ${scan.medicineId}",
+                                    style: TextStyle(
+                                      fontSize: 13,
+                                      color: Colors.grey.shade700,
+                                    ),
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    _formatDate(scan.timestamp),
+                                    style: TextStyle(
+                                      fontSize: 12,
+                                      color: Colors.grey.shade500,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              trailing: Icon(
+                                Icons.arrow_forward_ios,
+                                size: 16,
+                                color: Colors.grey.shade400,
+                              ),
+                              onTap: () {
+                                // Show detailed scan result
+                              },
+                            ),
+                          );
+                        },
+                      ),
                 ],
               ),
             ),
-            
+
             // How it works section
             Container(
               margin: const EdgeInsets.symmetric(horizontal: 20),
@@ -428,18 +443,20 @@ class _HomeScreenState extends State<HomeScreen> {
                   _buildHowItWorksStep(
                     icon: Icons.link,
                     title: "Verify",
-                    description: "Our app verifies the medicine on the blockchain",
+                    description:
+                        "Our app verifies the medicine on the blockchain",
                   ),
                   const SizedBox(height: 12),
                   _buildHowItWorksStep(
                     icon: Icons.check_circle,
                     title: "Trust",
-                    description: "Get instant confirmation of medicine authenticity",
+                    description:
+                        "Get instant confirmation of medicine authenticity",
                   ),
                 ],
               ),
             ),
-            
+
             const SizedBox(height: 30),
           ],
         ),
@@ -450,18 +467,9 @@ class _HomeScreenState extends State<HomeScreen> {
         unselectedItemColor: Colors.grey,
         type: BottomNavigationBarType.fixed,
         items: const [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            label: "Home",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.history),
-            label: "History",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.info),
-            label: "Education",
-          ),
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
+          BottomNavigationBarItem(icon: Icon(Icons.history), label: "History"),
+          BottomNavigationBarItem(icon: Icon(Icons.info), label: "Education"),
           BottomNavigationBarItem(
             icon: Icon(Icons.settings),
             label: "Settings",
@@ -485,11 +493,7 @@ class _HomeScreenState extends State<HomeScreen> {
             color: Colors.white,
             borderRadius: BorderRadius.circular(12),
           ),
-          child: Icon(
-            icon,
-            color: Colors.teal,
-            size: 24,
-          ),
+          child: Icon(icon, color: Colors.teal, size: 24),
         ),
         const SizedBox(width: 16),
         Expanded(
@@ -507,10 +511,7 @@ class _HomeScreenState extends State<HomeScreen> {
               const SizedBox(height: 4),
               Text(
                 description,
-                style: TextStyle(
-                  fontSize: 14,
-                  color: Colors.grey.shade700,
-                ),
+                style: TextStyle(fontSize: 14, color: Colors.grey.shade700),
               ),
             ],
           ),
@@ -522,7 +523,7 @@ class _HomeScreenState extends State<HomeScreen> {
   String _formatDate(DateTime date) {
     final now = DateTime.now();
     final difference = now.difference(date);
-    
+
     if (difference.inDays == 0) {
       return "Today";
     } else if (difference.inDays == 1) {
@@ -550,4 +551,3 @@ class ScanResult {
     required this.timestamp,
   });
 }
-
