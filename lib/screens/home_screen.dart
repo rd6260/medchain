@@ -48,7 +48,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _showScanResultDialog(String code) {
-    // In a real app, you would verify this code against your blockchain
+    // In a real app, we would verify this code against our blockchain
     bool isVerified = code.length > 5; // Dummy verification logic
     
     showDialog(
