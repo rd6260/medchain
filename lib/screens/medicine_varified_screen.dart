@@ -13,26 +13,28 @@ class MedicineVerifiedScreen extends StatelessWidget {
     Map<String, dynamic> medicineData;
     try {
       medicineData = json.decode(jsonData);
+      // print(medicineData);
     } catch (e) {
       return _buildErrorScreen(context, "Invalid data format");
     }
 
     // Extract medicine information
     final String name = medicineData['name'] ?? 'N/A';
-    final String id = medicineData['id'] ?? 'N/A';
-    final String manufacturingDate = medicineData['manufacturingDate'] ?? 'N/A';
-    final String expiryDate = medicineData['expiryDate'] ?? 'N/A';
+    final String id = medicineData['drug_id'] ?? 'N/A';
+    final String batchNumber = medicineData["batch_number"] ?? "N/A";
+    final String manufacturingDate = medicineData['manufacture_date'] ?? 'N/A';
+    final String expiryDate = medicineData['expiry_date'] ?? 'N/A';
 
     // Format dates if they are valid
     String formattedManufDate = manufacturingDate;
     String formattedExpDate = expiryDate;
-    
+
     try {
       if (manufacturingDate != 'N/A') {
         final DateTime mDate = DateTime.parse(manufacturingDate);
         formattedManufDate = DateFormat('dd MMM yyyy').format(mDate);
       }
-      
+
       if (expiryDate != 'N/A') {
         final DateTime eDate = DateTime.parse(expiryDate);
         formattedExpDate = DateFormat('dd MMM yyyy').format(eDate);
@@ -60,11 +62,7 @@ class MedicineVerifiedScreen extends StatelessWidget {
                   color: Colors.teal.shade50,
                   shape: BoxShape.circle,
                 ),
-                child: Icon(
-                  Icons.verified,
-                  size: 80,
-                  color: Colors.teal,
-                ),
+                child: Icon(Icons.verified, size: 80, color: Colors.teal),
               ),
             ),
             const SizedBox(height: 20),
@@ -79,10 +77,7 @@ class MedicineVerifiedScreen extends StatelessWidget {
             const SizedBox(height: 10),
             const Text(
               'This medicine has been verified as authentic',
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.grey,
-              ),
+              style: TextStyle(fontSize: 16, color: Colors.grey),
               textAlign: TextAlign.center,
             ),
             const SizedBox(height: 40),
@@ -115,13 +110,15 @@ class MedicineVerifiedScreen extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 20),
-                    _buildInfoRow('Name', name),
-                    const Divider(height: 30),
                     _buildInfoRow('ID', id),
+                    const Divider(height: 30),
+                    _buildInfoRow('Name', name),
                     const Divider(height: 30),
                     _buildInfoRow('Manufacturing Date', formattedManufDate),
                     const Divider(height: 30),
                     _buildInfoRow('Expiry Date', formattedExpDate),
+                    const Divider(height: 30),
+                    _buildInfoRow('Batch Number', batchNumber),
                   ],
                 ),
               ),
@@ -140,20 +137,14 @@ class MedicineVerifiedScreen extends StatelessWidget {
           flex: 2,
           child: Text(
             label,
-            style: const TextStyle(
-              fontSize: 16,
-              color: Colors.grey,
-            ),
+            style: const TextStyle(fontSize: 16, color: Colors.grey),
           ),
         ),
         Expanded(
           flex: 3,
           child: Text(
             value,
-            style: const TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w500,
-            ),
+            style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
           ),
         ),
       ],
@@ -170,11 +161,7 @@ class MedicineVerifiedScreen extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            const Icon(
-              Icons.error_outline,
-              size: 80,
-              color: Colors.red,
-            ),
+            const Icon(Icons.error_outline, size: 80, color: Colors.red),
             const SizedBox(height: 20),
             Text(
               message,
@@ -184,9 +171,7 @@ class MedicineVerifiedScreen extends StatelessWidget {
             const SizedBox(height: 20),
             ElevatedButton(
               onPressed: () => Navigator.pop(context),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red,
-              ),
+              style: ElevatedButton.styleFrom(backgroundColor: Colors.red),
               child: const Text('Go Back'),
             ),
           ],
