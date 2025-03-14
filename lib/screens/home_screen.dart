@@ -469,7 +469,7 @@ class _HomeScreenState extends State<HomeScreen> {
         items: const [
           BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
           BottomNavigationBarItem(icon: Icon(Icons.history), label: "History"),
-          BottomNavigationBarItem(icon: Icon(Icons.info), label: "Education"),
+          // BottomNavigationBarItem(icon: Icon(Icons.info), label: "Education"),
           BottomNavigationBarItem(
             icon: Icon(Icons.settings),
             label: "Settings",
