@@ -1,0 +1,27 @@
+import 'package:supabase_flutter/supabase_flutter.dart';
+
+class AuthService {
+  final SupabaseClient _supabaseClient = Supabase.instance.client;
+
+  // Sign in with email and password
+  Future<AuthResponse> signInWithEmailPassword(String email, password) async {
+    return await _supabaseClient.auth.signInWithPassword(password: password);
+  }
+
+  // Sign up with email and password
+  Future<AuthResponse> signUpWithEmailPassword(String email, password) async {
+    return await _supabaseClient.auth.signUp(email: email, password: password);
+  }
+
+  // Sign out
+  Future<void> signOut() async {
+    await _supabaseClient.auth.signOut();
+  }
+
+  // Get user email
+  String? getCurrentUserEmail() {
+    final Session? session = _supabaseClient.auth.currentSession;
+    final User? user = session?.user;
+    return user?.email;
+  }
+}
