@@ -1,7 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:medchain/screens/home_screen.dart';
+import 'package:medchain/supabase_apis.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 
-void main() {
+void main() async {
+  //supabase setup
+  await Supabase.initialize(
+    anonKey: SUPABASE_ANONKEY, 
+    url: SUPABASE_URL,
+  );
+
   runApp(const MyApp());
 }
 
