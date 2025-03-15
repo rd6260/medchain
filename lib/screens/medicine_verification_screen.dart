@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
+import 'package:medchain/screens/not_authentic_med_screen.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class MedicineVerificationScreen extends StatelessWidget {
@@ -11,15 +12,20 @@ class MedicineVerificationScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Map<String, dynamic> data = jsonDecode(content);
-    
+    late Map<String, dynamic> data;
+    try {
+      data = jsonDecode(content);
+    } catch (e) {
+      return NotAuthenticMedScreen();
+    }
+
     // Format dates for better readability
     final manufactureDate = _formatDate(data['manufacture_date']);
     final expiryDate = _formatDate(data['expiry_date']);
-    
+
     // Calculate if medicine is expired
     final bool isExpired = _isExpired(data['expiry_date']);
-    
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("Medicine Verification"),
@@ -45,7 +51,13 @@ class MedicineVerificationScreen extends StatelessWidget {
         child: SingleChildScrollView(
           child: Column(
             children: [
-              _buildVerificationCard(context, data, manufactureDate, expiryDate, isExpired),
+              _buildVerificationCard(
+                context,
+                data,
+                manufactureDate,
+                expiryDate,
+                isExpired,
+              ),
               const SizedBox(height: 20),
               _buildBlockchainInfoCard(context, data),
               const SizedBox(height: 20),
@@ -57,8 +69,13 @@ class MedicineVerificationScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildVerificationCard(BuildContext context, Map<String, dynamic> data, 
-      String manufactureDate, String expiryDate, bool isExpired) {
+  Widget _buildVerificationCard(
+    BuildContext context,
+    Map<String, dynamic> data,
+    String manufactureDate,
+    String expiryDate,
+    bool isExpired,
+  ) {
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
       elevation: 8,
@@ -100,11 +117,27 @@ class MedicineVerificationScreen extends StatelessWidget {
                 children: [
                   _buildMedicineNameSection(data['name']),
                   const Divider(height: 24),
-                  _infoTile("Manufacturer", data['manufacturer'], Icons.business),
-                  _infoTile("Batch Number", data['batch_number'], Icons.confirmation_number),
-                  _infoTile("Manufacture Date", manufactureDate, Icons.calendar_today),
-                  _infoTile("Expiry Date", expiryDate, Icons.event_busy, 
-                      isExpired ? Colors.red : null),
+                  _infoTile(
+                    "Manufacturer",
+                    data['manufacturer'],
+                    Icons.business,
+                  ),
+                  _infoTile(
+                    "Batch Number",
+                    data['batch_number'],
+                    Icons.confirmation_number,
+                  ),
+                  _infoTile(
+                    "Manufacture Date",
+                    manufactureDate,
+                    Icons.calendar_today,
+                  ),
+                  _infoTile(
+                    "Expiry Date",
+                    expiryDate,
+                    Icons.event_busy,
+                    isExpired ? Colors.red : null,
+                  ),
                 ],
               ),
             ),
@@ -168,7 +201,10 @@ class MedicineVerificationScreen extends StatelessWidget {
     );
   }
 
-  Widget _buildBlockchainInfoCard(BuildContext context, Map<String, dynamic> data) {
+  Widget _buildBlockchainInfoCard(
+    BuildContext context,
+    Map<String, dynamic> data,
+  ) {
     return Card(
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
       elevation: 8,
@@ -188,13 +224,13 @@ class MedicineVerificationScreen extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             _buildHashEntry(
-              "Blockchain TX ID", 
+              "Blockchain TX ID",
               data['blockchain_tx_id'],
               onTap: () => _viewOnBlockchain(data['blockchain_tx_id']),
             ),
             const SizedBox(height: 12),
             _buildHashEntry(
-              "Verification Hash", 
+              "Verification Hash",
               data['verificationHash'],
               onTap: () => _copyToClipboard(context, data['verificationHash']),
             ),
@@ -266,7 +302,9 @@ class MedicineVerificationScreen extends StatelessWidget {
               backgroundColor: Color(0xFF6C63FF),
               foregroundColor: Colors.white,
               padding: const EdgeInsets.symmetric(vertical: 16),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(10),
+              ),
             ),
           ),
         ),
@@ -285,14 +323,21 @@ class MedicineVerificationScreen extends StatelessWidget {
             foregroundColor: Colors.orange.shade800,
             side: BorderSide(color: Colors.orange.shade800),
             padding: const EdgeInsets.symmetric(vertical: 16),
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(10),
+            ),
           ),
         ),
       ],
     );
   }
 
-  Widget _infoTile(String title, String value, IconData icon, [Color? valueColor]) {
+  Widget _infoTile(
+    String title,
+    String value,
+    IconData icon, [
+    Color? valueColor,
+  ]) {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: Row(
@@ -372,34 +417,35 @@ class MedicineVerificationScreen extends StatelessWidget {
   void _reportIssue(BuildContext context) {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Report Counterfeit Medicine'),
-        content: const Text(
-          'If you suspect this medicine is counterfeit, please submit a report. '
-          'Our team will investigate and take appropriate action.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              // Implement report submission
-              Navigator.pop(context);
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Report submitted successfully'),
-                ),
-              );
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red.shade700,
+      builder:
+          (context) => AlertDialog(
+            title: const Text('Report Counterfeit Medicine'),
+            content: const Text(
+              'If you suspect this medicine is counterfeit, please submit a report. '
+              'Our team will investigate and take appropriate action.',
             ),
-            child: const Text('Submit Report'),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('Cancel'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  // Implement report submission
+                  Navigator.pop(context);
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Report submitted successfully'),
+                    ),
+                  );
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.red.shade700,
+                ),
+                child: const Text('Submit Report'),
+              ),
+            ],
           ),
-        ],
-      ),
     );
   }
 }

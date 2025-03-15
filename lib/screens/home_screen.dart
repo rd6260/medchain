@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:medchain/screens/notificatons_screen.dart';
+import 'package:medchain/screens/prescription_screen.dart';
+import 'package:medchain/screens/profile_screen.dart';
 import 'package:medchain/screens/scan_qr_screen.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -22,30 +24,14 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      body: SafeArea(
-        child: Column(
-          children: [
-            _buildAppBar(),
-            Expanded(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.all(16.0),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _buildWelcomeCard(),
-                    const SizedBox(height: 20),
-                    _buildBrowseMedicinesCard(),
-                    const SizedBox(height: 20),
-                    _buildPrescriptionCard(),
-                    const SizedBox(height: 20),
-                    _buildHealthArticles(),
-                    const SizedBox(height: 20),
-                  ],
-                ),
-              ),
-            ),
-          ],
-        ),
+      body: IndexedStack(
+        index: _selectedIndex,
+        children: [
+          _buildLandingScreen(),
+          Container(),
+          PrescriptionScreen(),
+          ProfileScreen(),
+        ],
       ),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Theme.of(context).primaryColor,
@@ -110,6 +96,34 @@ class _HomeScreenState extends State<HomeScreen> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildLandingScreen() {
+    return SafeArea(
+      child: Column(
+        children: [
+          _buildAppBar(),
+          Expanded(
+            child: SingleChildScrollView(
+              padding: const EdgeInsets.all(16.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  _buildWelcomeCard(),
+                  const SizedBox(height: 20),
+                  _buildBrowseMedicinesCard(),
+                  const SizedBox(height: 20),
+                  _buildPrescriptionCard(),
+                  const SizedBox(height: 20),
+                  _buildHealthArticles(),
+                  const SizedBox(height: 20),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -199,13 +213,15 @@ class _HomeScreenState extends State<HomeScreen> {
         // Navigate to browse medicines screen
       },
       child: Container(
-        height: 180,
         width: double.infinity,
+        // Remove the fixed height: 180,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(20),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.1),
+              color: Colors.black.withValues(
+                alpha: 0.1,
+              ), // Changed withValues to withOpacity
               blurRadius: 10,
               offset: const Offset(0, 5),
             ),
@@ -228,6 +244,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize:
+                        MainAxisSize
+                            .min, // Add this to make column take minimum required height
                     children: [
                       Container(
                         padding: EdgeInsets.symmetric(
@@ -235,7 +254,9 @@ class _HomeScreenState extends State<HomeScreen> {
                           vertical: 5,
                         ),
                         decoration: BoxDecoration(
-                          color: Colors.white.withValues(alpha: 0.2),
+                          color: Colors.white.withValues(
+                            alpha: 0.2,
+                          ), // Changed withValues to withOpacity
                           borderRadius: BorderRadius.circular(30),
                         ),
                         child: Text(
@@ -263,7 +284,9 @@ class _HomeScreenState extends State<HomeScreen> {
                         style: TextStyle(
                           fontSize: 13,
                           height: 1.4,
-                          color: Colors.white.withValues(alpha: 0.9),
+                          color: Colors.white.withValues(
+                            alpha: 0.9,
+                          ), // Changed withValues to withOpacity
                         ),
                       ),
                       SizedBox(height: 15),
@@ -297,16 +320,22 @@ class _HomeScreenState extends State<HomeScreen> {
                 flex: 3,
                 child: Container(
                   decoration: BoxDecoration(
-                    color: Colors.white.withValues(alpha: 0.1),
+                    color: Colors.white.withValues(
+                      alpha: 0.1,
+                    ), // Changed withValues to withOpacity
                   ),
-                  child: Center(
+                  child: AspectRatio(
+                    // Use AspectRatio to maintain image proportions
+                    aspectRatio: 3 / 4, // Adjust this as needed
                     child: Image.network(
                       'https://images.unsplash.com/photo-1563213126-a4273aed2016?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fG1lZGljaW5lc3xlbnwwfHwwfHx8MA%3D%3D',
                       width: double.infinity,
                       height: double.infinity,
                       fit: BoxFit.cover,
                       colorBlendMode: BlendMode.overlay,
-                      color: Colors.black.withValues(alpha: 0.2),
+                      color: Colors.black.withValues(
+                        alpha: 0.2,
+                      ), // Changed withValues to withOpacity
                     ),
                   ),
                 ),
