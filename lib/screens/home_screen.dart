@@ -21,6 +21,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       body: SafeArea(
         child: Column(
           children: [
@@ -113,63 +114,9 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // Widget _buildAppBar() {
-  //   return Container(
-  //     padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
-  //     decoration: BoxDecoration(
-  //       color: Colors.grey[100],
-  //       boxShadow: [
-  //         BoxShadow(
-  //           color: Colors.black.withValues(alpha: 0.05),
-  //           blurRadius: 4,
-  //           offset: const Offset(0, 2),
-  //         ),
-  //       ],
-  //     ),
-  //     child: Row(
-  //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
-  //       children: [
-  //         Row(
-  //           children: [
-  //             Text(
-  //               'Med',
-  //               style: TextStyle(
-  //                 fontSize: 22,
-  //                 fontWeight: FontWeight.bold,
-  //                 color: Colors.grey[800],
-  //               ),
-  //             ),
-  //             Text(
-  //               'Chain',
-  //               style: TextStyle(
-  //                 fontSize: 22,
-  //                 fontWeight: FontWeight.bold,
-  //                 color: Theme.of(context).primaryColor,
-  //               ),
-  //             ),
-  //           ],
-  //         ),
-  //         Row(
-  //           children: [
-  //             IconButton(
-  //               icon: const Icon(Icons.notifications_outlined),
-  //               onPressed: () {},
-  //             ),
-  //             CircleAvatar(
-  //               backgroundColor: Colors.grey[300],
-  //               radius: 18,
-  //               child: const Icon(Icons.person, color: Colors.white),
-  //             ),
-  //           ],
-  //         ),
-  //       ],
-  //     ),
-  //   );
-  // }
-
   Widget _buildAppBar() {
     return AppBar(
-      backgroundColor: Colors.transparent,
+      backgroundColor: Colors.white,
       elevation: 0,
       title: RichText(
         text: TextSpan(
@@ -370,126 +317,6 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-
-  // Widget _buildPrescriptionCard() {
-  //   return Column(
-  //     crossAxisAlignment: CrossAxisAlignment.start,
-  //     children: [
-  //       const Text(
-  //         'My Prescriptions',
-  //         style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-  //       ),
-  //       const SizedBox(height: 12),
-  //       Container(
-  //         width: double.infinity,
-  //         decoration: BoxDecoration(
-  //           borderRadius: BorderRadius.circular(16),
-  //           color: Colors.white,
-  //           boxShadow: [
-  //             BoxShadow(
-  //               color: Colors.black.withValues(alpha: 0.05),
-  //               blurRadius: 10,
-  //               offset: const Offset(0, 5),
-  //             ),
-  //           ],
-  //         ),
-  //         child: Material(
-  //           color: Colors.transparent,
-  //           child: InkWell(
-  //             borderRadius: BorderRadius.circular(16),
-  //             onTap: () {},
-  //             child: Padding(
-  //               padding: const EdgeInsets.all(16.0),
-  //               child: Column(
-  //                 children: [
-  //                   Row(
-  //                     children: [
-  //                       Container(
-  //                         padding: const EdgeInsets.all(12),
-  //                         decoration: BoxDecoration(
-  //                           color: Theme.of(
-  //                             context,
-  //                           ).primaryColor.withValues(alpha: 0.1),
-  //                           borderRadius: BorderRadius.circular(12),
-  //                         ),
-  //                         child: Icon(
-  //                           Icons.description_outlined,
-  //                           color: Theme.of(context).primaryColor,
-  //                         ),
-  //                       ),
-  //                       const SizedBox(width: 16),
-  //                       Expanded(
-  //                         child: Column(
-  //                           crossAxisAlignment: CrossAxisAlignment.start,
-  //                           children: const [
-  //                             Text(
-  //                               'View your prescriptions',
-  //                               style: TextStyle(
-  //                                 fontSize: 16,
-  //                                 fontWeight: FontWeight.bold,
-  //                               ),
-  //                             ),
-  //                             SizedBox(height: 4),
-  //                             Text(
-  //                               'Access and manage your digital prescriptions',
-  //                               style: TextStyle(
-  //                                 fontSize: 14,
-  //                                 color: Colors.black54,
-  //                               ),
-  //                             ),
-  //                           ],
-  //                         ),
-  //                       ),
-  //                       const Icon(
-  //                         Icons.arrow_forward_ios,
-  //                         size: 16,
-  //                         color: Colors.black54,
-  //                       ),
-  //                     ],
-  //                   ),
-  //                   const SizedBox(height: 12),
-  //                   Container(
-  //                     padding: const EdgeInsets.all(12),
-  //                     decoration: BoxDecoration(
-  //                       color: Colors.grey[100],
-  //                       borderRadius: BorderRadius.circular(12),
-  //                     ),
-  //                     child: Row(
-  //                       children: [
-  //                         Container(
-  //                           padding: const EdgeInsets.all(8),
-  //                           decoration: BoxDecoration(
-  //                             color: Colors.orange.withValues(alpha: 0.2),
-  //                             borderRadius: BorderRadius.circular(8),
-  //                           ),
-  //                           child: const Icon(
-  //                             Icons.medication_outlined,
-  //                             color: Colors.orange,
-  //                             size: 20,
-  //                           ),
-  //                         ),
-  //                         const SizedBox(width: 12),
-  //                         const Expanded(
-  //                           child: Text(
-  //                             'Your latest prescription expires in 3 days',
-  //                             style: TextStyle(
-  //                               fontSize: 14,
-  //                               color: Colors.black87,
-  //                             ),
-  //                           ),
-  //                         ),
-  //                       ],
-  //                     ),
-  //                   ),
-  //                 ],
-  //               ),
-  //             ),
-  //           ),
-  //         ),
-  //       ),
-  //     ],
-  //   );
-  // }
 
   Widget _buildPrescriptionCard() {
     return Column(

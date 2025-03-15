@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:medchain/screens/qr_validation_screen.dart';
+import 'package:medchain/screens/medicine_verification_screen.dart';
 import 'package:mobile_scanner/mobile_scanner.dart';
 
 class ScanQrScreen extends StatefulWidget {
@@ -30,7 +30,7 @@ class _ScanQrScreenState extends State<ScanQrScreen> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => QRValidationScreen(content: scannedData),
+          builder: (context) => MedicineVerificationScreen(content: scannedData),
         ),
       );
     }
