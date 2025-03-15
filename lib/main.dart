@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:medchain/screens/home_screen.dart';
+// import 'package:medchain/screens/home_screen.dart';
 import 'package:medchain/supabase_apis.dart';
+import 'package:medchain/utils/auth_gate.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 void main() async {
@@ -20,7 +21,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      home: const HomeScreen(),
+      home: AuthGate(),
     );
   }
 }
