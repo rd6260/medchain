@@ -1,505 +1,6 @@
-// import 'package:flutter/material.dart';
-// import 'package:flutter/services.dart';
-// import 'package:medchain/screens/medicine_varified_screen.dart';
-// import 'package:medchain/services/auth_service.dart';
-// import 'package:mobile_scanner/mobile_scanner.dart';
-
-// class HomeScreen extends StatefulWidget {
-//   const HomeScreen({super.key});
-
-//   @override
-//   State<HomeScreen> createState() => _HomeScreenState();
-// }
-
-// class _HomeScreenState extends State<HomeScreen> {
-//   final authService = AuthService();
-//   bool isScanning = false;
-//   List<ScanResult> recentScans = [
-//     ScanResult(
-//       medicineId: "MED123456",
-//       medicineName: "Paracetamol 500mg",
-//       manufacturer: "PharmaCorp",
-//       verificationStatus: true,
-//       timestamp: DateTime.now().subtract(const Duration(days: 1)),
-//     ),
-//     ScanResult(
-//       medicineId: "MED789012",
-//       medicineName: "Amoxicillin 250mg",
-//       manufacturer: "MediLabs",
-//       verificationStatus: true,
-//       timestamp: DateTime.now().subtract(const Duration(days: 3)),
-//     ),
-//     ScanResult(
-//       medicineId: "MED345678",
-//       medicineName: "Ibuprofen 400mg",
-//       manufacturer: "HealthPharm",
-//       verificationStatus: false,
-//       timestamp: DateTime.now().subtract(const Duration(days: 5)),
-//     ),
-//   ];
-
-//   // get onLogout => null;
-//   void onLogout() {
-//     authService.signOut();
-//   }
-
-//   @override
-//   void dispose() {
-//     super.dispose();
-//   }
-
-//   void _onDetect(BarcodeCapture capture) {
-//     final List<Barcode> barcodes = capture.barcodes;
-//     // for (final barcode in barcodes) {
-//     //   _showScanResultDialog(barcode.rawValue ?? "Unknown");
-//     // }
-
-//     if (barcodes[0].rawValue != null) {
-//       isScanning = false;
-//       Navigator.push(
-//         context,
-//         MaterialPageRoute(
-//           builder:
-//               (context) =>
-//                   MedicineVerifiedScreen(jsonData: barcodes[0].rawValue!),
-//         ),
-//       );
-//     }
-//   }
-
-//   void _startScan() {
-//     setState(() {
-//       isScanning = true;
-//     });
-
-//     showModalBottomSheet(
-//       context: context,
-//       isScrollControlled: true,
-//       backgroundColor: Colors.transparent,
-//       builder:
-//           (context) => Container(
-//             height: MediaQuery.of(context).size.height * 0.8,
-//             decoration: const BoxDecoration(
-//               color: Colors.white,
-//               borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
-//             ),
-//             child: Column(
-//               children: [
-//                 Padding(
-//                   padding: const EdgeInsets.all(16.0),
-//                   child: Row(
-//                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                     children: [
-//                       const Text(
-//                         "Scan Medicine QR Code",
-//                         style: TextStyle(
-//                           fontSize: 18,
-//                           fontWeight: FontWeight.bold,
-//                         ),
-//                       ),
-//                       IconButton(
-//                         icon: const Icon(Icons.close),
-//                         onPressed: () {
-//                           //controller?.pauseCamera();
-//                           Navigator.pop(context);
-//                           setState(() {
-//                             isScanning = false;
-//                           });
-//                         },
-//                       ),
-//                     ],
-//                   ),
-//                 ),
-//                 Expanded(
-//                   child: MobileScanner(
-//                     onDetect: _onDetect,
-//                     // overlayBuilder: (context, constraints) => ,
-//                     // overlay: MobileScannerOverlay(
-//                     //   overlayColor: Theme.of(context).primaryColor,
-//                     //   borderRadius: 10,
-//                     //   borderLength: 30,
-//                     //   borderWidth: 10,
-//                     //   cutOutSize: MediaQuery.of(context).size.width * 0.8,
-//                     // ),
-//                   ),
-//                 ),
-//                 Padding(
-//                   padding: const EdgeInsets.all(16.0),
-//                   child: Text(
-//                     "Position the QR code within the frame to scan",
-//                     style: TextStyle(color: Colors.grey.shade600),
-//                     textAlign: TextAlign.center,
-//                   ),
-//                 ),
-//               ],
-//             ),
-//           ),
-//     ).then((_) {
-//       //controller?.pauseCamera();
-//       setState(() {
-//         isScanning = false;
-//       });
-//     });
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       backgroundColor: Colors.grey.shade50,
-//       appBar: AppBar(
-//         title: const Row(
-//           children: [
-//             Icon(Icons.medical_services, color: Colors.teal),
-//             SizedBox(width: 8),
-//             Text(
-//               "MedChain",
-//               style: TextStyle(fontWeight: FontWeight.bold, color: Colors.teal),
-//             ),
-//           ],
-//         ),
-//         backgroundColor: Colors.white,
-//         elevation: 0,
-//         systemOverlayStyle: SystemUiOverlayStyle.dark,
-//         actions: [
-//           IconButton(
-//             icon: const Icon(Icons.person_outline, color: Colors.teal),
-//             onPressed: () {
-//               // Navigate to profile screen
-//             },
-//           ),
-//           IconButton(
-//             icon: const Icon(Icons.logout, color: Colors.teal),
-//             onPressed: onLogout,
-//           ),
-//         ],
-//       ),
-//       body: SingleChildScrollView(
-//         child: Column(
-//           crossAxisAlignment: CrossAxisAlignment.start,
-//           children: [
-//             // Hero section with scan button
-//             Container(
-//               width: double.infinity,
-//               padding: const EdgeInsets.all(20),
-//               decoration: BoxDecoration(
-//                 color: Colors.white,
-//                 borderRadius: const BorderRadius.only(
-//                   bottomLeft: Radius.circular(30),
-//                   bottomRight: Radius.circular(30),
-//                 ),
-//                 boxShadow: [
-//                   BoxShadow(
-//                     color: Colors.grey.shade200,
-//                     blurRadius: 10,
-//                     offset: const Offset(0, 5),
-//                   ),
-//                 ],
-//               ),
-//               child: Column(
-//                 children: [
-//                   const Text(
-//                     "Verify Medicine Authenticity",
-//                     style: TextStyle(
-//                       fontSize: 24,
-//                       fontWeight: FontWeight.bold,
-//                       color: Colors.teal,
-//                     ),
-//                     textAlign: TextAlign.center,
-//                   ),
-//                   const SizedBox(height: 16),
-//                   const Text(
-//                     "Scan the QR code on your medicine package to verify its authenticity using blockchain technology",
-//                     style: TextStyle(fontSize: 16, color: Colors.grey),
-//                     textAlign: TextAlign.center,
-//                   ),
-//                   const SizedBox(height: 30),
-//                   ElevatedButton.icon(
-//                     onPressed: _startScan,
-//                     icon: const Icon(Icons.qr_code_scanner, size: 24),
-//                     label: const Text(
-//                       "Scan QR Code",
-//                       style: TextStyle(fontSize: 18),
-//                     ),
-//                     style: ElevatedButton.styleFrom(
-//                       backgroundColor: Colors.teal,
-//                       foregroundColor: Colors.white,
-//                       padding: const EdgeInsets.symmetric(
-//                         horizontal: 30,
-//                         vertical: 15,
-//                       ),
-//                       shape: RoundedRectangleBorder(
-//                         borderRadius: BorderRadius.circular(30),
-//                       ),
-//                     ),
-//                   ),
-//                   const SizedBox(height: 20),
-//                 ],
-//               ),
-//             ),
-
-//             // Recent scans section
-//             Padding(
-//               padding: const EdgeInsets.all(20),
-//               child: Column(
-//                 crossAxisAlignment: CrossAxisAlignment.start,
-//                 children: [
-//                   const Text(
-//                     "Recent Scans",
-//                     style: TextStyle(
-//                       fontSize: 20,
-//                       fontWeight: FontWeight.bold,
-//                       color: Colors.black87,
-//                     ),
-//                   ),
-//                   const SizedBox(height: 16),
-//                   recentScans.isEmpty
-//                       ? Center(
-//                         child: Padding(
-//                           padding: const EdgeInsets.all(20),
-//                           child: Column(
-//                             children: [
-//                               Icon(
-//                                 Icons.history,
-//                                 size: 60,
-//                                 color: Colors.grey.shade400,
-//                               ),
-//                               const SizedBox(height: 16),
-//                               Text(
-//                                 "No recent scans",
-//                                 style: TextStyle(
-//                                   fontSize: 16,
-//                                   color: Colors.grey.shade600,
-//                                 ),
-//                               ),
-//                             ],
-//                           ),
-//                         ),
-//                       )
-//                       : ListView.builder(
-//                         shrinkWrap: true,
-//                         physics: const NeverScrollableScrollPhysics(),
-//                         itemCount: recentScans.length,
-//                         itemBuilder: (context, index) {
-//                           final scan = recentScans[index];
-//                           return Card(
-//                             margin: const EdgeInsets.only(bottom: 12),
-//                             elevation: 1,
-//                             shape: RoundedRectangleBorder(
-//                               borderRadius: BorderRadius.circular(12),
-//                             ),
-//                             child: ListTile(
-//                               contentPadding: const EdgeInsets.symmetric(
-//                                 horizontal: 16,
-//                                 vertical: 8,
-//                               ),
-//                               leading: CircleAvatar(
-//                                 backgroundColor:
-//                                     scan.verificationStatus
-//                                         ? Colors.green.shade100
-//                                         : Colors.red.shade100,
-//                                 child: Icon(
-//                                   scan.verificationStatus
-//                                       ? Icons.check
-//                                       : Icons.close,
-//                                   color:
-//                                       scan.verificationStatus
-//                                           ? Colors.green.shade700
-//                                           : Colors.red.shade700,
-//                                 ),
-//                               ),
-//                               title: Text(
-//                                 scan.medicineName,
-//                                 style: const TextStyle(
-//                                   fontWeight: FontWeight.bold,
-//                                 ),
-//                               ),
-//                               subtitle: Column(
-//                                 crossAxisAlignment: CrossAxisAlignment.start,
-//                                 children: [
-//                                   const SizedBox(height: 4),
-//                                   Text(
-//                                     "Manufacturer: ${scan.manufacturer}",
-//                                     style: TextStyle(
-//                                       fontSize: 13,
-//                                       color: Colors.grey.shade700,
-//                                     ),
-//                                   ),
-//                                   const SizedBox(height: 2),
-//                                   Text(
-//                                     "ID: ${scan.medicineId}",
-//                                     style: TextStyle(
-//                                       fontSize: 13,
-//                                       color: Colors.grey.shade700,
-//                                     ),
-//                                   ),
-//                                   const SizedBox(height: 4),
-//                                   Text(
-//                                     _formatDate(scan.timestamp),
-//                                     style: TextStyle(
-//                                       fontSize: 12,
-//                                       color: Colors.grey.shade500,
-//                                     ),
-//                                   ),
-//                                 ],
-//                               ),
-//                               trailing: Icon(
-//                                 Icons.arrow_forward_ios,
-//                                 size: 16,
-//                                 color: Colors.grey.shade400,
-//                               ),
-//                               onTap: () {
-//                                 // Show detailed scan result
-//                               },
-//                             ),
-//                           );
-//                         },
-//                       ),
-//                 ],
-//               ),
-//             ),
-
-//             // How it works section
-//             Container(
-//               margin: const EdgeInsets.symmetric(horizontal: 20),
-//               padding: const EdgeInsets.all(20),
-//               decoration: BoxDecoration(
-//                 color: Colors.teal.shade50,
-//                 borderRadius: BorderRadius.circular(16),
-//               ),
-//               child: Column(
-//                 crossAxisAlignment: CrossAxisAlignment.start,
-//                 children: [
-//                   const Text(
-//                     "How MedChain Works",
-//                     style: TextStyle(
-//                       fontSize: 18,
-//                       fontWeight: FontWeight.bold,
-//                       color: Colors.teal,
-//                     ),
-//                   ),
-//                   const SizedBox(height: 16),
-//                   _buildHowItWorksStep(
-//                     icon: Icons.qr_code,
-//                     title: "Scan",
-//                     description: "Scan the QR code on your medicine package",
-//                   ),
-//                   const SizedBox(height: 12),
-//                   _buildHowItWorksStep(
-//                     icon: Icons.link,
-//                     title: "Verify",
-//                     description:
-//                         "Our app verifies the medicine on the blockchain",
-//                   ),
-//                   const SizedBox(height: 12),
-//                   _buildHowItWorksStep(
-//                     icon: Icons.check_circle,
-//                     title: "Trust",
-//                     description:
-//                         "Get instant confirmation of medicine authenticity",
-//                   ),
-//                 ],
-//               ),
-//             ),
-
-//             const SizedBox(height: 30),
-//           ],
-//         ),
-//       ),
-//       bottomNavigationBar: BottomNavigationBar(
-//         currentIndex: 0,
-//         selectedItemColor: Colors.teal,
-//         unselectedItemColor: Colors.grey,
-//         type: BottomNavigationBarType.fixed,
-//         items: const [
-//           BottomNavigationBarItem(icon: Icon(Icons.home), label: "Home"),
-//           BottomNavigationBarItem(icon: Icon(Icons.history), label: "History"),
-//           // BottomNavigationBarItem(icon: Icon(Icons.info), label: "Education"),
-//           BottomNavigationBarItem(
-//             icon: Icon(Icons.settings),
-//             label: "Settings",
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-
-//   Widget _buildHowItWorksStep({
-//     required IconData icon,
-//     required String title,
-//     required String description,
-//   }) {
-//     return Row(
-//       crossAxisAlignment: CrossAxisAlignment.start,
-//       children: [
-//         Container(
-//           padding: const EdgeInsets.all(10),
-//           decoration: BoxDecoration(
-//             color: Colors.white,
-//             borderRadius: BorderRadius.circular(12),
-//           ),
-//           child: Icon(icon, color: Colors.teal, size: 24),
-//         ),
-//         const SizedBox(width: 16),
-//         Expanded(
-//           child: Column(
-//             crossAxisAlignment: CrossAxisAlignment.start,
-//             children: [
-//               Text(
-//                 title,
-//                 style: const TextStyle(
-//                   fontSize: 16,
-//                   fontWeight: FontWeight.bold,
-//                   color: Colors.teal,
-//                 ),
-//               ),
-//               const SizedBox(height: 4),
-//               Text(
-//                 description,
-//                 style: TextStyle(fontSize: 14, color: Colors.grey.shade700),
-//               ),
-//             ],
-//           ),
-//         ),
-//       ],
-//     );
-//   }
-
-//   String _formatDate(DateTime date) {
-//     final now = DateTime.now();
-//     final difference = now.difference(date);
-
-//     if (difference.inDays == 0) {
-//       return "Today";
-//     } else if (difference.inDays == 1) {
-//       return "Yesterday";
-//     } else if (difference.inDays < 7) {
-//       return "${difference.inDays} days ago";
-//     } else {
-//       return "${date.day}/${date.month}/${date.year}";
-//     }
-//   }
-// }
-
-// class ScanResult {
-//   final String medicineId;
-//   final String medicineName;
-//   final String manufacturer;
-//   final bool verificationStatus;
-//   final DateTime timestamp;
-
-//   ScanResult({
-//     required this.medicineId,
-//     required this.medicineName,
-//     required this.manufacturer,
-//     required this.verificationStatus,
-//     required this.timestamp,
-//   });
-// }
-
-
-
 import 'package:flutter/material.dart';
-import 'package:mobile_scanner/mobile_scanner.dart';
+import 'package:medchain/screens/notificatons_screen.dart';
+import 'package:medchain/screens/scan_qr_screen.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -511,284 +12,100 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _selectedIndex = 0;
 
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Color(0xFFF9FAFC),
       body: SafeArea(
-        child: Stack(
+        child: Column(
           children: [
-            // Main Content
-            CustomScrollView(
-              slivers: [
-                // App Bar
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 20, 20, 10),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        RichText(
-                          text: TextSpan(
-                            children: [
-                              TextSpan(
-                                text: 'Med',
-                                style: TextStyle(
-                                  fontSize: 26,
-                                  fontWeight: FontWeight.w700,
-                                  color: Color(0xFF3E3F65),
-                                ),
-                              ),
-                              TextSpan(
-                                text: 'Chain',
-                                style: TextStyle(
-                                  fontSize: 26,
-                                  fontWeight: FontWeight.w700,
-                                  color: Color(0xFF6C63FF),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Row(
-                          children: [
-                            CircleAvatar(
-                              radius: 20,
-                              backgroundColor: Colors.white,
-                              child: Icon(
-                                Icons.notifications_outlined,
-                                color: Color(0xFF3E3F65),
-                                size: 22,
-                              ),
-                            ),
-                            SizedBox(width: 12),
-                            CircleAvatar(
-                              radius: 20,
-                              backgroundColor: Colors.white,
-                              backgroundImage: NetworkImage('https://i.pravatar.cc/150'),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-
-                // Banner
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 20, 20, 0),
-                    child: Container(
-                      height: 180,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        image: DecorationImage(
-                          image: NetworkImage('https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=800'),
-                          fit: BoxFit.cover,
-                          colorFilter: ColorFilter.mode(
-                            Colors.black.withValues(alpha: 0.3),
-                            BlendMode.darken,
-                          ),
-                        ),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(20),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Authentic Medicines',
-                              style: TextStyle(
-                                fontSize: 24,
-                                fontWeight: FontWeight.bold,
-                                color: Colors.white,
-                              ),
-                            ),
-                            SizedBox(height: 8),
-                            Text(
-                              'Verify using blockchain technology',
-                              style: TextStyle(
-                                fontSize: 16,
-                                color: Colors.white.withValues(alpha: 0.9),
-                              ),
-                            ),
-                            SizedBox(height: 16),
-                            ElevatedButton(
-                              onPressed: () => _openScanner(context),
-                              style: ElevatedButton.styleFrom(
-                                backgroundColor: Color(0xFF6C63FF),
-                                foregroundColor: Colors.white,
-                                padding: EdgeInsets.symmetric(horizontal: 20, vertical: 12),
-                                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-                                elevation: 0,
-                              ),
-                              child: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Icon(Icons.qr_code_scanner, size: 20),
-                                  SizedBox(width: 8),
-                                  Text(
-                                    'Scan Medicine',
-                                    style: TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-
-                // Quick Stats
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 24, 20, 10),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        _buildStatCard(
-                          "Today's Scans",
-                          '12',
-                          Color(0xFF6C63FF).withValues(alpha: 0.1),
-                          Icon(Icons.qr_code, color: Color(0xFF6C63FF)),
-                        ),
-                        _buildStatCard(
-                          'Verified',
-                          '96%',
-                          Color(0xFF4CAF50).withValues(alpha: 0.1),
-                          Icon(Icons.verified, color: Color(0xFF4CAF50)),
-                        ),
-                        _buildStatCard(
-                          'Issues',
-                          '3',
-                          Color(0xFFF44336).withValues(alpha: 0.1),
-                          Icon(Icons.warning, color: Color(0xFFF44336)),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-
-                // Recent Verifications
-                SliverToBoxAdapter(
-                  child: Padding(
-                    padding: const EdgeInsets.fromLTRB(20, 20, 20, 10),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          'Recent Scans',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            color: Color(0xFF3E3F65),
-                          ),
-                        ),
-                        TextButton(
-                          onPressed: () {},
-                          child: Text(
-                            'See All',
-                            style: TextStyle(
-                              color: Color(0xFF6C63FF),
-                              fontWeight: FontWeight.w600,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-
-                // Medication List
-                SliverList(
-                  delegate: SliverChildListDelegate([
-                    _buildMedicineItem(
-                      'Paracetamol 500mg',
-                      'Verified • 2 hours ago',
-                      'https://images.unsplash.com/photo-1584308666744-24d5c474f2ae?w=150',
-                      true,
-                    ),
-                    _buildMedicineItem(
-                      'Amoxicillin 250mg',
-                      'Verified • Yesterday',
-                      'https://images.unsplash.com/photo-1550572017-edd951b55104?w=150',
-                      true,
-                    ),
-                    _buildMedicineItem(
-                      'Unknown Medicine',
-                      'Warning • 3 days ago',
-                      'https://images.unsplash.com/photo-1471864190281-a93a3070b6de?w=150',
-                      false,
-                    ),
-                    SizedBox(height: 80), // Space for bottom nav bar
-                  ]),
-                ),
-              ],
-            ),
-
-            // Floating Scan Button
-            Positioned(
-              right: 20,
-              bottom: 90,
-              child: Container(
-                height: 60,
-                width: 60,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  gradient: LinearGradient(
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                    colors: [Color(0xFF6C63FF), Color(0xFF5A49F2)],
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Color(0xFF6C63FF).withValues(alpha: 0.3),
-                      spreadRadius: 1,
-                      blurRadius: 15,
-                      offset: Offset(0, 8),
-                    ),
+            _buildAppBar(),
+            Expanded(
+              child: SingleChildScrollView(
+                padding: const EdgeInsets.all(16.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    _buildWelcomeCard(),
+                    const SizedBox(height: 20),
+                    _buildBrowseMedicinesCard(),
+                    const SizedBox(height: 20),
+                    _buildPrescriptionCard(),
+                    const SizedBox(height: 20),
+                    _buildHealthArticles(),
+                    const SizedBox(height: 20),
                   ],
-                ),
-                child: IconButton(
-                  icon: Icon(Icons.qr_code_scanner, color: Colors.white, size: 28),
-                  onPressed: () => _openScanner(context),
                 ),
               ),
             ),
           ],
         ),
       ),
-      
-      // Bottom Navigation Bar
-      bottomNavigationBar: Container(
-        height: 80,
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.only(
-            topLeft: Radius.circular(25),
-            topRight: Radius.circular(25),
-          ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.05),
-              blurRadius: 10,
-              offset: Offset(0, -5),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Theme.of(context).primaryColor,
+        elevation: 4,
+        onPressed:
+            () => Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => ScanQrScreen()),
             ),
-          ],
-        ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
+        child: const Icon(Icons.qr_code_scanner, size: 28),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      bottomNavigationBar: BottomAppBar(
+        shape: const CircularNotchedRectangle(),
+        notchMargin: 8,
+        child: SizedBox(
+          height: 60,
           child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
-              _buildNavItem(Icons.home_rounded, 'Home', 0),
-              _buildNavItem(Icons.analytics_rounded, 'Reports', 1),
-              SizedBox(width: 10), // Space for FAB
-              _buildNavItem(Icons.shield_rounded, 'Verify', 2),
-              _buildNavItem(Icons.person_rounded, 'Profile', 3),
+              IconButton(
+                icon: Icon(
+                  Icons.home,
+                  color:
+                      _selectedIndex == 0
+                          ? Theme.of(context).primaryColor
+                          : Colors.grey,
+                ),
+                onPressed: () => _onItemTapped(0),
+              ),
+              IconButton(
+                icon: Icon(
+                  Icons.medication_outlined,
+                  color:
+                      _selectedIndex == 1
+                          ? Theme.of(context).primaryColor
+                          : Colors.grey,
+                ),
+                onPressed: () => _onItemTapped(1),
+              ),
+              const SizedBox(width: 40),
+              IconButton(
+                icon: Icon(
+                  Icons.description_outlined,
+                  color:
+                      _selectedIndex == 2
+                          ? Theme.of(context).primaryColor
+                          : Colors.grey,
+                ),
+                onPressed: () => _onItemTapped(2),
+              ),
+              IconButton(
+                icon: Icon(
+                  Icons.person,
+                  color:
+                      _selectedIndex == 3
+                          ? Theme.of(context).primaryColor
+                          : Colors.grey,
+                ),
+                onPressed: () => _onItemTapped(3),
+              ),
             ],
           ),
         ),
@@ -796,33 +113,132 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildStatCard(String title, String value, Color bgColor, Icon icon) {
+  // Widget _buildAppBar() {
+  //   return Container(
+  //     padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+  //     decoration: BoxDecoration(
+  //       color: Colors.grey[100],
+  //       boxShadow: [
+  //         BoxShadow(
+  //           color: Colors.black.withValues(alpha: 0.05),
+  //           blurRadius: 4,
+  //           offset: const Offset(0, 2),
+  //         ),
+  //       ],
+  //     ),
+  //     child: Row(
+  //       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //       children: [
+  //         Row(
+  //           children: [
+  //             Text(
+  //               'Med',
+  //               style: TextStyle(
+  //                 fontSize: 22,
+  //                 fontWeight: FontWeight.bold,
+  //                 color: Colors.grey[800],
+  //               ),
+  //             ),
+  //             Text(
+  //               'Chain',
+  //               style: TextStyle(
+  //                 fontSize: 22,
+  //                 fontWeight: FontWeight.bold,
+  //                 color: Theme.of(context).primaryColor,
+  //               ),
+  //             ),
+  //           ],
+  //         ),
+  //         Row(
+  //           children: [
+  //             IconButton(
+  //               icon: const Icon(Icons.notifications_outlined),
+  //               onPressed: () {},
+  //             ),
+  //             CircleAvatar(
+  //               backgroundColor: Colors.grey[300],
+  //               radius: 18,
+  //               child: const Icon(Icons.person, color: Colors.white),
+  //             ),
+  //           ],
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
+
+  Widget _buildAppBar() {
+    return AppBar(
+      backgroundColor: Colors.transparent,
+      elevation: 0,
+      title: RichText(
+        text: TextSpan(
+          children: [
+            TextSpan(
+              text: 'Med',
+              style: TextStyle(
+                fontSize: 26,
+                fontWeight: FontWeight.w700,
+                color: Color(0xFF3E3F65),
+              ),
+            ),
+            TextSpan(
+              text: 'Chain',
+              style: TextStyle(
+                fontSize: 26,
+                fontWeight: FontWeight.w700,
+                color: Color(0xFF6C63FF),
+              ),
+            ),
+          ],
+        ),
+      ),
+      actions: [
+        IconButton(
+          icon: Icon(Icons.notifications_outlined, color: Color(0xFF3E3F65)),
+          onPressed:
+              () => Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => NotificationsScreen()),
+              ),
+        ),
+        SizedBox(width: 10),
+      ],
+    );
+  }
+
+  Widget _buildWelcomeCard() {
     return Container(
-      width: 100,
-      padding: EdgeInsets.all(15),
+      width: double.infinity,
+      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: bgColor,
+        gradient: LinearGradient(
+          colors: [
+            Theme.of(context).primaryColor,
+            Theme.of(context).primaryColor.withValues(alpha: 0.7),
+          ],
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+        ),
         borderRadius: BorderRadius.circular(16),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          icon,
-          SizedBox(height: 12),
-          Text(
-            value,
+          const Text(
+            'Welcome to MedChain',
             style: TextStyle(
               fontSize: 20,
               fontWeight: FontWeight.bold,
-              color: Color(0xFF3E3F65),
+              color: Colors.white,
             ),
           ),
-          SizedBox(height: 4),
+          const SizedBox(height: 8),
           Text(
-            title,
+            'Secure, authentic medicines verified with blockchain technology',
             style: TextStyle(
-              fontSize: 12,
-              color: Colors.grey[600],
+              fontSize: 14,
+              color: Colors.white.withValues(alpha: 0.9),
             ),
           ),
         ],
@@ -830,80 +246,508 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildMedicineItem(String name, String status, String imageUrl, bool isVerified) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+  Widget _buildBrowseMedicinesCard() {
+    return GestureDetector(
+      onTap: () {
+        // Navigate to browse medicines screen
+      },
       child: Container(
-        padding: EdgeInsets.all(12),
+        height: 180,
+        width: double.infinity,
         decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(20),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.03),
+              color: Colors.black.withValues(alpha: 0.1),
               blurRadius: 10,
-              offset: Offset(0, 4),
+              offset: const Offset(0, 5),
             ),
           ],
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [Color(0xFF6C63FF), Color(0xFF4E45C5)],
+          ),
         ),
-        child: Row(
-          children: [
-            Container(
-              width: 60,
-              height: 60,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12),
-                image: DecorationImage(
-                  image: NetworkImage(imageUrl),
-                  fit: BoxFit.cover,
-                ),
-              ),
-            ),
-            SizedBox(width: 16),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    name,
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Color(0xFF3E3F65),
-                    ),
-                  ),
-                  SizedBox(height: 4),
-                  Row(
+        child: ClipRRect(
+          borderRadius: BorderRadius.circular(20),
+          child: Row(
+            children: [
+              // Left section with text content
+              Expanded(
+                flex: 5,
+                child: Padding(
+                  padding: const EdgeInsets.all(20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(
-                        isVerified ? Icons.check_circle : Icons.warning,
-                        size: 14,
-                        color: isVerified ? Color(0xFF4CAF50) : Color(0xFFF44336),
+                      Container(
+                        padding: EdgeInsets.symmetric(
+                          horizontal: 10,
+                          vertical: 5,
+                        ),
+                        decoration: BoxDecoration(
+                          color: Colors.white.withValues(alpha: 0.2),
+                          borderRadius: BorderRadius.circular(30),
+                        ),
+                        child: Text(
+                          'BLOCKCHAIN VERIFIED',
+                          style: TextStyle(
+                            fontSize: 10,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                            letterSpacing: 0.5,
+                          ),
+                        ),
                       ),
-                      SizedBox(width: 4),
+                      SizedBox(height: 12),
                       Text(
-                        status,
+                        'Browse Medicines',
+                        style: TextStyle(
+                          fontSize: 22,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                      ),
+                      SizedBox(height: 8),
+                      Text(
+                        'Find and verify authentic medications in our secure database',
                         style: TextStyle(
                           fontSize: 13,
-                          color: Colors.grey[600],
+                          height: 1.4,
+                          color: Colors.white.withValues(alpha: 0.9),
                         ),
+                      ),
+                      SizedBox(height: 15),
+                      Row(
+                        children: [
+                          Icon(Icons.search, color: Colors.white, size: 16),
+                          SizedBox(width: 6),
+                          Text(
+                            'Search now',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          SizedBox(width: 4),
+                          Icon(
+                            Icons.arrow_forward,
+                            color: Colors.white,
+                            size: 14,
+                          ),
+                        ],
                       ),
                     ],
                   ),
+                ),
+              ),
+
+              // Right section with image
+              Expanded(
+                flex: 3,
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white.withValues(alpha: 0.1),
+                  ),
+                  child: Center(
+                    child: Image.network(
+                      'https://images.unsplash.com/photo-1563213126-a4273aed2016?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTJ8fG1lZGljaW5lc3xlbnwwfHwwfHx8MA%3D%3D',
+                      width: double.infinity,
+                      height: double.infinity,
+                      fit: BoxFit.cover,
+                      colorBlendMode: BlendMode.overlay,
+                      color: Colors.black.withValues(alpha: 0.2),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  // Widget _buildPrescriptionCard() {
+  //   return Column(
+  //     crossAxisAlignment: CrossAxisAlignment.start,
+  //     children: [
+  //       const Text(
+  //         'My Prescriptions',
+  //         style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+  //       ),
+  //       const SizedBox(height: 12),
+  //       Container(
+  //         width: double.infinity,
+  //         decoration: BoxDecoration(
+  //           borderRadius: BorderRadius.circular(16),
+  //           color: Colors.white,
+  //           boxShadow: [
+  //             BoxShadow(
+  //               color: Colors.black.withValues(alpha: 0.05),
+  //               blurRadius: 10,
+  //               offset: const Offset(0, 5),
+  //             ),
+  //           ],
+  //         ),
+  //         child: Material(
+  //           color: Colors.transparent,
+  //           child: InkWell(
+  //             borderRadius: BorderRadius.circular(16),
+  //             onTap: () {},
+  //             child: Padding(
+  //               padding: const EdgeInsets.all(16.0),
+  //               child: Column(
+  //                 children: [
+  //                   Row(
+  //                     children: [
+  //                       Container(
+  //                         padding: const EdgeInsets.all(12),
+  //                         decoration: BoxDecoration(
+  //                           color: Theme.of(
+  //                             context,
+  //                           ).primaryColor.withValues(alpha: 0.1),
+  //                           borderRadius: BorderRadius.circular(12),
+  //                         ),
+  //                         child: Icon(
+  //                           Icons.description_outlined,
+  //                           color: Theme.of(context).primaryColor,
+  //                         ),
+  //                       ),
+  //                       const SizedBox(width: 16),
+  //                       Expanded(
+  //                         child: Column(
+  //                           crossAxisAlignment: CrossAxisAlignment.start,
+  //                           children: const [
+  //                             Text(
+  //                               'View your prescriptions',
+  //                               style: TextStyle(
+  //                                 fontSize: 16,
+  //                                 fontWeight: FontWeight.bold,
+  //                               ),
+  //                             ),
+  //                             SizedBox(height: 4),
+  //                             Text(
+  //                               'Access and manage your digital prescriptions',
+  //                               style: TextStyle(
+  //                                 fontSize: 14,
+  //                                 color: Colors.black54,
+  //                               ),
+  //                             ),
+  //                           ],
+  //                         ),
+  //                       ),
+  //                       const Icon(
+  //                         Icons.arrow_forward_ios,
+  //                         size: 16,
+  //                         color: Colors.black54,
+  //                       ),
+  //                     ],
+  //                   ),
+  //                   const SizedBox(height: 12),
+  //                   Container(
+  //                     padding: const EdgeInsets.all(12),
+  //                     decoration: BoxDecoration(
+  //                       color: Colors.grey[100],
+  //                       borderRadius: BorderRadius.circular(12),
+  //                     ),
+  //                     child: Row(
+  //                       children: [
+  //                         Container(
+  //                           padding: const EdgeInsets.all(8),
+  //                           decoration: BoxDecoration(
+  //                             color: Colors.orange.withValues(alpha: 0.2),
+  //                             borderRadius: BorderRadius.circular(8),
+  //                           ),
+  //                           child: const Icon(
+  //                             Icons.medication_outlined,
+  //                             color: Colors.orange,
+  //                             size: 20,
+  //                           ),
+  //                         ),
+  //                         const SizedBox(width: 12),
+  //                         const Expanded(
+  //                           child: Text(
+  //                             'Your latest prescription expires in 3 days',
+  //                             style: TextStyle(
+  //                               fontSize: 14,
+  //                               color: Colors.black87,
+  //                             ),
+  //                           ),
+  //                         ),
+  //                       ],
+  //                     ),
+  //                   ),
+  //                 ],
+  //               ),
+  //             ),
+  //           ),
+  //         ),
+  //       ),
+  //     ],
+  //   );
+  // }
+
+  Widget _buildPrescriptionCard() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+              'My Prescriptions',
+              style: TextStyle(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                letterSpacing: 0.3,
+              ),
+            ),
+            TextButton(
+              onPressed: () {},
+              style: TextButton.styleFrom(
+                foregroundColor: Theme.of(context).primaryColor,
+                padding: EdgeInsets.zero,
+                minimumSize: Size(40, 30),
+              ),
+              child: Row(
+                children: [
+                  Text(
+                    'View all',
+                    style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
+                  ),
+                  SizedBox(width: 4),
+                  Icon(Icons.arrow_forward, size: 16),
                 ],
               ),
             ),
-            Container(
-              padding: EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                color: isVerified ? Color(0xFF4CAF50).withValues(alpha: 0.1) : Color(0xFFF44336).withValues(alpha: 0.1),
-                borderRadius: BorderRadius.circular(8),
+          ],
+        ),
+        const SizedBox(height: 16),
+        Container(
+          width: double.infinity,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(18),
+            color: Colors.white,
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withValues(alpha: 0.06),
+                blurRadius: 12,
+                spreadRadius: 0,
+                offset: const Offset(0, 6),
               ),
-              child: Icon(
-                isVerified ? Icons.shield_rounded : Icons.shield_outlined,
-                size: 16,
-                color: isVerified ? Color(0xFF4CAF50) : Color(0xFFF44336),
+            ],
+          ),
+          child: Material(
+            color: Colors.transparent,
+            child: InkWell(
+              borderRadius: BorderRadius.circular(18),
+              onTap: () {},
+              child: Padding(
+                padding: const EdgeInsets.all(18.0),
+                child: Column(
+                  children: [
+                    Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.all(12),
+                          decoration: BoxDecoration(
+                            color: Theme.of(
+                              context,
+                            ).primaryColor.withValues(alpha: 0.12),
+                            borderRadius: BorderRadius.circular(14),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Theme.of(
+                                  context,
+                                ).primaryColor.withValues(alpha: 0.1),
+                                blurRadius: 8,
+                                spreadRadius: 0,
+                                offset: const Offset(0, 2),
+                              ),
+                            ],
+                          ),
+                          child: Icon(
+                            Icons.medical_information_rounded,
+                            color: Theme.of(context).primaryColor,
+                            size: 24,
+                          ),
+                        ),
+                        const SizedBox(width: 18),
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'Digital Prescriptions',
+                                style: TextStyle(
+                                  fontSize: 17,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.grey[800],
+                                ),
+                              ),
+                              SizedBox(height: 6),
+                              Text(
+                                'Access and manage blockchain-verified medical prescriptions',
+                                style: TextStyle(
+                                  fontSize: 14,
+                                  height: 1.4,
+                                  color: Colors.grey[600],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Container(
+                          decoration: BoxDecoration(
+                            color: Colors.grey[50],
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: Material(
+                            color: Colors.transparent,
+                            child: InkWell(
+                              borderRadius: BorderRadius.circular(10),
+                              onTap: () {},
+                              child: Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Icon(
+                                  Icons.arrow_forward_ios,
+                                  size: 16,
+                                  color: Theme.of(context).primaryColor,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      child: Divider(color: Colors.grey[200], thickness: 1.2),
+                    ),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 14,
+                        horizontal: 16,
+                      ),
+                      decoration: BoxDecoration(
+                        gradient: LinearGradient(
+                          colors: [
+                            Colors.orange.shade50,
+                            Colors.orange.shade100.withValues(alpha: 0.3),
+                          ],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                        ),
+                        borderRadius: BorderRadius.circular(14),
+                        border: Border.all(
+                          color: Colors.orange.shade200.withValues(alpha: 0.5),
+                          width: 1,
+                        ),
+                      ),
+                      child: Row(
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(10),
+                            decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(10),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.orange.withValues(alpha: 0.15),
+                                  blurRadius: 8,
+                                  spreadRadius: 0,
+                                  offset: const Offset(0, 2),
+                                ),
+                              ],
+                            ),
+                            child: const Icon(
+                              Icons.notifications_active_outlined,
+                              color: Colors.orange,
+                              size: 20,
+                            ),
+                          ),
+                          const SizedBox(width: 16),
+                          Expanded(
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Expiring Soon',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.orange.shade800,
+                                  ),
+                                ),
+                                SizedBox(height: 4),
+                                Text(
+                                  'Your prescription for Amoxicillin expires in 3 days',
+                                  style: TextStyle(
+                                    fontSize: 14,
+                                    color: Colors.grey[700],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    SizedBox(height: 14),
+                    Row(
+                      children: [
+                        _buildPrescriptionStat(
+                          'Active',
+                          '3',
+                          Colors.green.shade400,
+                        ),
+                        SizedBox(width: 12),
+                        _buildPrescriptionStat('Expired', '2', Colors.grey),
+                        SizedBox(width: 12),
+                        _buildPrescriptionStat(
+                          'Filled',
+                          '7',
+                          Colors.blue.shade400,
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildPrescriptionStat(String label, String count, Color color) {
+    return Expanded(
+      child: Container(
+        padding: EdgeInsets.symmetric(vertical: 10),
+        decoration: BoxDecoration(
+          color: color.withValues(alpha: 0.1),
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(color: color.withValues(alpha: 0.2), width: 1),
+        ),
+        child: Column(
+          children: [
+            Text(
+              count,
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: color,
+              ),
+            ),
+            SizedBox(height: 4),
+            Text(
+              label,
+              style: TextStyle(fontSize: 12, color: Colors.grey[700]),
             ),
           ],
         ),
@@ -911,61 +755,92 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  Widget _buildNavItem(IconData icon, String label, int index) {
-    final bool isSelected = _selectedIndex == index;
-    
-    return InkWell(
-      onTap: () {
-        setState(() {
-          _selectedIndex = index;
-        });
-      },
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Container(
-            padding: EdgeInsets.all(12),
-            decoration: BoxDecoration(
-              color: isSelected ? Color(0xFF6C63FF).withValues(alpha: 0.1) : Colors.transparent,
-              borderRadius: BorderRadius.circular(12),
+  Widget _buildHealthArticles() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            const Text(
+              'Health Articles',
+              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
             ),
-            child: Icon(
-              icon,
-              color: isSelected ? Color(0xFF6C63FF) : Colors.grey,
-              size: 22,
-            ),
+            TextButton(onPressed: () {}, child: const Text('View All')),
+          ],
+        ),
+        const SizedBox(height: 12),
+        SizedBox(
+          height: 160,
+          child: ListView(
+            scrollDirection: Axis.horizontal,
+            children: [
+              _articleCard(
+                'The Benefits of Blockchain in Healthcare',
+                Icons.security_outlined,
+              ),
+              _articleCard(
+                'How to Spot Counterfeit Medicines',
+                Icons.health_and_safety_outlined,
+              ),
+              _articleCard(
+                'Medicine Safety Tips',
+                Icons.medical_information_outlined,
+              ),
+            ],
           ),
-          SizedBox(height: 4),
-          Text(
-            label,
-            style: TextStyle(
-              color: isSelected ? Color(0xFF6C63FF) : Colors.grey,
-              fontSize: 12,
-              fontWeight: isSelected ? FontWeight.w600 : FontWeight.normal,
-            ),
-          ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
-  void _openScanner(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(
-        builder: (context) => Scaffold(
-          appBar: AppBar(
-            title: Text('Scan Medicine QR Code'),
-            backgroundColor: Color(0xFF6C63FF),
+  Widget _articleCard(String title, IconData icon) {
+    return Container(
+      margin: const EdgeInsets.only(right: 16),
+      width: 200,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16),
+        color: Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.05),
+            blurRadius: 10,
+            offset: const Offset(0, 5),
           ),
-          body: MobileScanner(
-            onDetect: (capture) {
-              final barcodes = capture.barcodes;
-              for (final barcode in barcodes) {
-                print('Barcode found! ${barcode.rawValue}');
-              }
-              Navigator.pop(context);
-            },
+        ],
+      ),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          borderRadius: BorderRadius.circular(16),
+          onTap: () {},
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  padding: const EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                    color: Theme.of(
+                      context,
+                    ).primaryColor.withValues(alpha: 0.1),
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: Icon(icon, color: Theme.of(context).primaryColor),
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  title,
+                  style: const TextStyle(
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
           ),
         ),
       ),
