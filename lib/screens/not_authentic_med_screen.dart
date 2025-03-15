@@ -43,6 +43,7 @@ class NotAuthenticMedScreen extends StatelessWidget {
         child: Column(
           children: [
             _buildWarningHeader(),
+            SizedBox(height: 30,),
             // _buildMedicineInfo(details),
             _buildIssuesList(details),
             _buildActions(),
